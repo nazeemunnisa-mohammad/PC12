@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: DatePickerExample(),
+  ));
+}
+
+class DatePickerExample extends StatefulWidget {
+  @override
+  _DatePickerExampleState createState() => _DatePickerExampleState();
+}
+
+class _DatePickerExampleState extends State<DatePickerExample> {
+  DateTime? startDate;
+  DateTime? endDate;
+
+  Future<void> selectStartDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        startDate = picked;
+        // End date is 29 days before start date
+        endDate = startDate!.subtract(Duration(days: 29));
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Date Picker Example")),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () => selectStartDate(context),
+              child: Text("Select Start Date"),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Start Date: ${startDate != null ? startDate!.toLocal().toString().split(' ')[0] : 'Not selected'}",
+            ),
+            SizedBox(height: 10),
+            Text(
+              "End Date: ${endDate != null ? endDate!.toLocal().toString().split(' ')[0] : 'Not calculated'}",
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
